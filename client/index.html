@@ -1,14 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>REST API</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
-    <!-- <script type="module">
-        import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.esm.browser.js'
-      </script> -->
-      <script type="module" src="frontend.js"></script>
+
+    <div class="container pt-3" id="app" v-cloak>
+        <h1>REST API</h1>
+
+        <form class="form-inline mb-3" @submit.prevent="createContact">
+            <div class="form-group mr-5">
+                <label for="name" class="mr-3">Имя</label>
+                <input type="text" class="form-control" required id="name" v-model="form.name">
+            </div>
+            <div class="form-group mr-5">
+                <label for="name" class="mr-3">Значение</label>
+                <input type="text" class="form-control" required id="value" v-model="form.value">
+            </div>
+            <button class="btn btn-primary" type="submit">Создать</button>
+        </form>
+
+        <div v-if="contacts.length">
+            <div class="card mb-3" v-for="contact in contacts">
+                <div class="card-body">
+                    <h5 class="card-title" :style="{color: contact.marked ? 'red' : 'black'}">
+                        {{contact.name}}
+                    </h5>
+                    <p class="card-text">
+                        {{contact.value}}
+                    </p>
+                    <button class="btn btn-primary" @click="markContact(contact.id)" :disabled="contact.marked">Отметить</button>
+                    <button class="btn btn-danger" @click="removeContact(contact.id)">Удалить</button>
+                </div>
+            </div>
+        </div>
+        <p v-else>
+            Пока нет контактов
+        </p>
+    </div>
+    <script type="module" src="frontend.js"></script>
 </body>
+
 </html>
