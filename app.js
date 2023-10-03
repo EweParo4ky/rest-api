@@ -3,6 +3,8 @@ const path = require('path');
 
 const app = express();
 
+console.log('APP', app);
+
 const CONTACTS = [
   {
     id: 1,
@@ -11,6 +13,10 @@ const CONTACTS = [
     marked: false,
   },
 ];
+
+app.get('/api/contacts', (req, res) => {
+  res.status(200).json(CONTACTS);
+});
 
 app.use(express.static(path.resolve(__dirname, 'client')));
 
