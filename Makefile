@@ -1,4 +1,8 @@
 start: 
 	node app.js
+
 dev: 
-	nodemon app.js
+	 npm run dev
+
+install: 
+	npm ci
