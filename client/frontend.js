@@ -26,10 +26,22 @@ const makeRequest = async (url, method = 'GET', data = null) => {
   }
 };
 
+// eslint-disable-next-line vue/multi-word-component-names
+Vue.component('loader', {
+  template: `
+    <div style="display: flex;justify-content: center;align-item: center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden"></span>
+      </div>
+    </div>
+    `,
+});
+
 new Vue({
   el: '#app',
   data() {
     return {
+      loading: false,
       form: {
         name: '',
         value: '',
@@ -38,25 +50,35 @@ new Vue({
     };
   },
   methods: {
-    createContact() {
+    async createContact() {
       const { ...contact } = this.form;
-      console.log(contact);
-      this.contacts.push({ ...contact, id: Date.now(), marked: false });
+      contact.value = `+7 ${contact.value}`;
+
+      const newContact = await makeRequest('/api/contacts', 'POST', contact);
+
+      this.contacts.push(newContact);
       this.form.name = '';
       this.form.value = '';
     },
-    markContact(id) {
+    async markContact(id) {
       const contact = this.contacts.find((cont) => cont.id === id);
-      contact.marked = true;
+      const updated = await makeRequest(`api/contacts/${id}`, 'PUT', {
+        ...contact,
+        marked: true,
+      });
+      contact.marked = updated.marked;
     },
-    removeContact(id) {
+    async removeContact(id) {
+      await makeRequest(`api/contacts/${id}`, 'DELETE');
       this.contacts = this.contacts.filter((cont) => cont.id !== id);
     },
   },
   async mounted() {
+    this.loading = true;
     const data = await makeRequest('api/contacts');
     console.log('data in mounted*****', data);
-    this.contacts = [...data];
+    this.contacts = data;
+    this.loading = false;
   },
 });
 
